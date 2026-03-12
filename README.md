@@ -77,8 +77,7 @@ Possible future improvements include:
 ---
 
 ## License
-
-MIT License
+This project is licensed under the GNU General Public License v3.0 (GPL-3.0).
 
 ---
 
@@ -86,6 +85,3 @@ MIT License
 
 Chen, Wen-You
 t66263105@gmail.com
-
-
-看起來會像 **真正開源工具專案**。
