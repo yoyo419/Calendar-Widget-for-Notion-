@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Blocks Scheduler</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <h1>Weekly Planner</h1>
+
+    <div id="nextDeadlineCountdown" class="deadline-countdown-banner">No upcoming active deadlines</div>
+
+    <div class="top-bar">
+      <div class="week-nav">
+        <button id="prevWeekBtn" class="secondary">← Previous Week</button>
+        <div id="currentWeekLabel" class="current-week-label"></div>
+        <button id="nextWeekBtn" class="secondary">Next Week →</button>
+      </div>
+    </div>
+
+    <div class="container">
+      <aside class="sidebar">
+        <div class="tasks-panel">
+        <div class="panel-title-row">
+            <h2>Unscheduled Tasks</h2>
+            <button id="addTaskBtn">+ Add Task</button>
+        </div>
+        <div id="taskList" class="task-list"></div>
+        </div>
+
+        <div class="weekly-template-panel">
+        <div class="panel-title-row weekly-tasks-header" id="toggleWeeklyTasksBtn">
+            <h2>Weekly Tasks</h2>
+            <button type="button" class="secondary">Open</button>
+        </div>
+
+        <div id="weeklyTasksContent" class="hidden">
+            <p class="panel-help">
+            These tasks are added to each new week as unscheduled tasks.
+            </p>
+            <div class="panel-title-row">
+            <div></div>
+            <button id="addTemplateTaskBtn">+ Add</button>
+            </div>
+            <div id="weeklyTemplateList" class="template-list"></div>
+        </div>
+        </div>
+
+        <div class="fixed-schedule-panel">
+        <div class="panel-title-row fixed-schedule-header" id="toggleFixedScheduleBtn">
+            <h2>Fixed Schedule</h2>
+            <button type="button" class="secondary">Open</button>
+        </div>
+
+        <div id="fixedScheduleContent" class="hidden">
+            <p class="panel-help">
+            Fixed schedules stay on the calendar until you manually delete them.
+            </p>
+            <div class="panel-title-row">
+            <div></div>
+            <button id="addFixedScheduleBtn">+ Add</button>
+            </div>
+            <div id="fixedScheduleList" class="template-list"></div>
+        </div>
+        </div>
+
+        <div class="stats">
+          <h3>Stats</h3>
+          <p>Remaining tasks: <span id="tasksLeft">0</span></p>
+          <p>Remaining time: <span id="timeLeft">0</span> min</p>
+          <p>Scheduled time this week: <span id="scheduledTime">0</span> min</p>
+        </div>
+
+        <div class="legend">
+          <h3>Color Categories</h3>
+          <div id="legendList"></div>
+        </div>
+      </aside>
+
+      <main class="planner-area">
+        <div id="calendar" class="calendar"></div>
+      </main>
+    </div>
+
+    <!-- Main Task Modal -->
+    <div id="taskModal" class="modal hidden">
+      <div class="modal-content">
+        <h2 id="modalTitle">Add Task</h2>
+
+        <label>
+          Task Name
+          <input type="text" id="taskNameInput" placeholder="Enter task name" />
+        </label>
+
+        <label>
+          Duration (minutes)
+          <input
+            type="number"
+            id="taskTimeInput"
+            placeholder="e.g. 90"
+            min="30"
+            step="30"
+          />
+        </label>
+
+        <label>
+          Category
+            <select id="taskCategoryInput"></select>
+          </select>
+        </label>
+
+        <label>
+          Type
+          <select id="taskTypeInput">
+            <option value="task">Normal Task</option>
+            <option value="fixed">Fixed Event</option>
+            <option value="deadline">Deadline</option>
+          </select>
+        </label>
+
+        <label id="fixedDayWrapper" class="hidden">
+          Day
+          <select id="fixedDayInput">
+            <option value="Mon">Mon</option>
+            <option value="Tue">Tue</option>
+            <option value="Wed">Wed</option>
+            <option value="Thu">Thu</option>
+            <option value="Fri">Fri</option>
+            <option value="Sat">Sat</option>
+            <option value="Sun">Sun</option>
+          </select>
+        </label>
+
+        <label id="fixedStartWrapper" class="hidden">
+          Start Time
+          <select id="fixedStartInput"></select>
+        </label>
+
+        <label id="fixedRepeatWrapper" class="hidden">
+          Repeat Every
+          <input
+            type="number"
+            id="fixedRepeatInput"
+            min="1"
+            step="1"
+            value="1"
+            placeholder="e.g. 2"
+          />
+          <small>week(s)</small>
+        </label>
+
+        <label id="fixedStartDateWrapper" class="hidden">
+          Start Date
+          <input type="date" id="fixedStartDateInput" />
+        </label>
+
+        <label id="deadlineWarningWrapper" class="hidden">
+          Warning Window
+          <input
+            type="number"
+            id="deadlineWarningInput"
+            min="0.5"
+            step="0.5"
+            value="2"
+            placeholder="e.g. 3"
+          />
+          <small>hour(s) before deadline</small>
+        </label>
+
+        <label id="deadlineOneTimeWrapper" class="hidden checkbox-label">
+          <input type="checkbox" id="deadlineOneTimeInput" />
+          One-time deadline only
+        </label>
+
+        <div class="modal-actions">
+          <button id="saveTaskBtn">Save</button>
+          <button id="deleteTaskBtn" class="danger hidden">Delete</button>
+          <button id="cancelTaskBtn" class="secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weekly Template Task Modal -->
+
+    <div class="weekly-template-panel">
+      <div class="panel-title-row">
+        <h2>Categories</h2>
+      </div>
+
+      <label>
+        Name
+        <input type="text" id="newCategoryNameInput" placeholder="e.g. Reading" />
+      </label>
+
+      <label>
+        Color
+        <input type="color" id="newCategoryColorInput" value="#8b5cf6" />
+      </label>
+
+      <div class="panel-title-row">
+        <div></div>
+        <button id="addCategoryBtn">+ Add Category</button>
+      </div>
+
+      <div id="categoryList" class="template-list"></div>
+    </div>
+
+    <div id="templateModal" class="modal hidden">
+      <div class="modal-content">
+        <h2 id="templateModalTitle">Add Weekly Template Task</h2>
+
+        <label>
+          Task Name
+          <input
+            type="text"
+            id="templateTaskNameInput"
+            placeholder="Enter task name"
+          />
+        </label>
+
+        <label>
+          Duration (minutes)
+          <input
+            type="number"
+            id="templateTaskTimeInput"
+            placeholder="e.g. 60"
+            min="30"
+            step="30"
+          />
+        </label>
+
+        <label>
+          Category
+          <select id="templateTaskCategoryInput"></select>
+        </label>
+
+        <div class="modal-actions">
+          <button id="saveTemplateTaskBtn">Save</button>
+          <button id="deleteTemplateTaskBtn" class="danger hidden">Delete</button>
+          <button id="cancelTemplateTaskBtn" class="secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
